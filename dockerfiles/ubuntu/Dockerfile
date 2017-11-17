@@ -1,10 +1,10 @@
 ARG FROM=ubuntu:xenial
 FROM ${FROM}
 
-ARG UBUNTU_URL=http://archive.ubuntu.com/ubuntu/
+ARG UBUNTU_URL=http://mirrors.ustc.edu.cn/ubuntu/
 ARG CLOUD_ARCHIVE_URL=http://ubuntu-cloud.archive.canonical.com/ubuntu/
-ARG CEPH_URL=http://download.ceph.com/debian-luminous/
-ARG ALLOW_UNAUTHENTICATED=false
+ARG CEPH_URL=http://mirrors.ustc.edu.cn/ceph/debian-luminous/
+ARG ALLOW_UNAUTHENTICATED=true
 ARG PIP_INDEX_URL=https://pypi.python.org/simple/
 ARG PIP_TRUSTED_HOST=pypi.python.org
 ENV PIP_INDEX_URL=${PIP_INDEX_URL}
