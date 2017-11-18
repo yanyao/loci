@@ -2,6 +2,7 @@
 
 PROC=$1
 
+
 FLAG=0
 for svc in server linuxbridge-agent dhcp-agent l3-agent metering-agent metadata-agent lbaasv2-agent;do
    if [[ $PROC == "$svc" ]];then
@@ -16,7 +17,7 @@ if [[ $FLAG -eq 0 ]];then
 fi
 
 INIT_DB=${INIT_DB:-false}
-
+VXLAN_INT=${VXLAN_INT:-eth1}
 
 if [ "$INIT_DB" = "true" ]; then
  /bin/sh -c "neutron-db-manage --config-file /etc/neutron/neutron.conf  --config-file /etc/neutron/plugins/ml2/ml2_conf.ini upgrade head" neutron
@@ -24,14 +25,18 @@ fi
 
 
 ln -s /var/lib/openstack/bin/neutron-rootwrap /usr/bin/
+ln -s /var/lib/openstack/bin/privsep-helper /usr/bin/
 
 case $PROC in 
    server)
      /bin/sh -c "neutron-server --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini --log-file=/var/log/neutron/neutron-server.log" neutron
     ;;
    linuxbridge-agent)
-      my_ip=`ip r|grep eth2|awk '{print $9}'` 
+      my_ip=`ip r|grep ${VXLAN_INT} |awk '{print $9}'` 
       echo $my_ip
+      if [[ $my_ip -eq 0 ]];then
+        my_ip=1.1.1.1
+      fi
       crudini --set etc/neutron/plugins/ml2/linuxbridge_agent.ini vxlan "local_ip" "$my_ip"
       /bin/sh -c "neutron-linuxbridge-agent --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini --config-file /etc/neutron/plugins/ml2/linuxbridge_agent.ini" neutron
      
