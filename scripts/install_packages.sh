@@ -7,6 +7,8 @@ if [[ "${PYTHON3}" != "no" ]]; then
 fi
 
 PACKAGES=($(bindep -f /opt/loci/bindep.txt -b ${PROJECT} ${PROFILES} ${python3} || :))
+EXTRA_PIP_PACKAGES=(${EXTRA_PIP_PACKAGES[@]})
+
 
 if [[ ! -z ${PACKAGES} ]]; then
     case ${distro} in
@@ -21,4 +23,8 @@ if [[ ! -z ${PACKAGES} ]]; then
             exit 1
             ;;
     esac
+fi
+
+if [[ ! -z ${EXTRA_PIP_PACKAGES} ]];then
+   pip install  -c /tmp/wheels/upper-constraints.txt ${EXTRA_PIP_PACKAGES[@]}
 fi

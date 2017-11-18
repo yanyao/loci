@@ -11,6 +11,7 @@ ARG PROFILES
 ARG PIP_PACKAGES
 ARG PLUGIN=no
 ARG PYTHON3=no
+ARG EXTRA_PIP_PACKAGES
 COPY scripts /opt/loci/scripts
 COPY bindep.txt /opt/loci/
 COPY ${PROJECT}/etc /etc
