@@ -1,0 +1,6 @@
+# Ansible managed
+
+Defaults:nova !requiretty
+Defaults:nova secure_path="/openstack/venvs/nova-16.0.3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+nova ALL = (root) NOPASSWD: /openstack/venvs/nova-16.0.3/bin/nova-rootwrap

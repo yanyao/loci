@@ -24,6 +24,6 @@ fi
 
 
 
-exec cinder-${PROC}
+exec nova-${PROC}
 
 
