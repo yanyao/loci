@@ -18,6 +18,7 @@ fi
 
 INIT_DB=${INIT_DB:-false}
 VXLAN_INT=${VXLAN_INT:-eth1}
+INT_MAPPING=${INT_MAPPING:-flat:eth12,vlan:eth11}
 
 if [ "$INIT_DB" = "true" ]; then
  /bin/sh -c "neutron-db-manage --config-file /etc/neutron/neutron.conf  --config-file /etc/neutron/plugins/ml2/ml2_conf.ini upgrade head" neutron
@@ -34,17 +35,21 @@ case $PROC in
    linuxbridge-agent)
       my_ip=`ip r|grep ${VXLAN_INT} |awk '{print $9}'` 
       echo $my_ip
-      if [[ $my_ip -eq 0 ]];then
-        my_ip=1.1.1.1
+      if [[  -z $my_ip  ]];then
+        my_ip=127.0.0.1
       fi
       crudini --set etc/neutron/plugins/ml2/linuxbridge_agent.ini vxlan "local_ip" "$my_ip"
+      crudini --set etc/neutron/plugins/ml2/linuxbridge_agent.ini linux_bridge "physical_interface_mappings" "${INT_MAPPING}"
+
       /bin/sh -c "neutron-linuxbridge-agent --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini --config-file /etc/neutron/plugins/ml2/linuxbridge_agent.ini" neutron
      
       ;;
     dhcp-agent)
+      ip -all netns delete
       /bin/sh -c "neutron-dhcp-agent --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/dhcp_agent.ini " neutron
       ;;
     l3-agent)
+      ip -all netns delete
       /bin/sh -c "neutron-l3-agent --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/l3_agent.ini" neutron
       ;;
     metering-agent)

@@ -14,9 +14,9 @@ ARG PYTHON3=no
 ARG EXTRA_PIP_PACKAGES
 COPY scripts /opt/loci/scripts
 COPY bindep.txt /opt/loci/
-COPY ${PROJECT}/etc /etc
-COPY ${PROJECT}/init.sh /
 
 RUN /opt/loci/scripts/install.sh
 
+COPY ${PROJECT}/etc /etc
+COPY ${PROJECT}/init.sh /
 ENTRYPOINT ["/init.sh"]
