@@ -4,7 +4,7 @@ PROC=$1
 
 
 FLAG=0
-for svc in server linuxbridge-agent dhcp-agent l3-agent metering-agent metadata-agent lbaasv2-agent;do
+for svc in server linuxbridge-agent dhcp-agent l3-agent metering-agent metadata-agent lbaasv2-agent openvswitch-agent;do
    if [[ $PROC == "$svc" ]];then
       FLAG=1
       break
@@ -60,6 +60,16 @@ case $PROC in
       ;;
     lbaasv2-agent)
       /bin/sh -c "neutron-metadata-agent --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/lbaasv2-agent_agent.ini" neutron
+      ;;
+    openvswitch-agent)
+      my_ip=`ip r|grep ${VXLAN_INT} |awk '{print $9}'` 
+      echo $my_ip
+      if [[  -z $my_ip  ]];then
+        my_ip=127.0.0.1
+      fi
+      crudini --set etc/neutron/plugins/ml2/openvswitch_agent.ini ovs "local_ip" "$my_ip"
+      crudini --set etc/neutron/plugins/ml2/openvswitch_agent.ini ovs "bridge_mappings" "${INT_MAPPING}"
+      /bin/sh -c "neutron-metadata-agent --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/openvswitch_agent.ini" neutron
       ;;
 esac
 

@@ -23,6 +23,7 @@ SPICE_SERVER_PROXYCLIENT_ADDRESS=${SPICE_SERVER_PROXYCLIENT_ADDRESS:-127.0.0.1}
 
 if [ "$INIT_DB" = "true" ]; then
  /bin/sh -c    "nova-manage api_db version" nova
+ /bin/sh -c    "nova-manage api_db sync" nova
  /bin/sh -c    "nova-manage cell_v2 map_cell0" nova
  /bin/sh -c    "nova-manage cell_v2 create_cell --name cell1" nova
  /bin/sh -c    "nova-manage api_db sync" nova
