@@ -69,7 +69,7 @@ case $PROC in
       fi
       crudini --set etc/neutron/plugins/ml2/openvswitch_agent.ini ovs "local_ip" "$my_ip"
       crudini --set etc/neutron/plugins/ml2/openvswitch_agent.ini ovs "bridge_mappings" "${INT_MAPPING}"
-      /bin/sh -c "neutron-metadata-agent --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/openvswitch_agent.ini" neutron
+      /bin/sh -c "neutron-openvswitch-agent --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/openvswitch_agent.ini" neutron
       ;;
 esac
 
